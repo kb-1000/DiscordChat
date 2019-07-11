@@ -1,0 +1,7 @@
+*.class
+*.iml
+*.jar
+.gradle
+.idea
+/Relocate/build
+/Relocate/download/build

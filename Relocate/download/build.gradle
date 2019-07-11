@@ -1,0 +1,15 @@
+plugins {
+    id "org.gradle.java"
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    implementation("net.dv8tion:JDA:3.8.3_464")
+}
+
+jar {
+    from(configurations.runtimeClasspath.filter {!it.path.endsWith(".pom")}.collect { it.isDirectory() ? it : zipTree(it) })
+}
