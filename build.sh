@@ -1,3 +1,6 @@
+pushd Relocate
+./gradlew jar
+popd
 rm -rf out
 mkdir out
 javac -cp $FORGE/mcp/bin/minecraft:Relocate/download/build/libs/download.jar -target 1.6 -source 1.6 -d out `find src/main/java -regex ".*\\.java"`

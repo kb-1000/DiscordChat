@@ -5,3 +5,4 @@
 .idea
 /Relocate/build
 /Relocate/download/build
+!/Relocate/gradle/wrapper/gradle-wrapper.jar
