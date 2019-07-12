@@ -9,8 +9,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 @SideOnly(Side.SERVER)
 public class ServerProxy extends CommonProxy {
@@ -23,17 +25,37 @@ public class ServerProxy extends CommonProxy {
             }
         });
         final String token;
-        try (final FileReader fileReader = new FileReader("bot_token.txt")) {
-            token = fileReader.read();
+        try {
+            token = read(new File("bot_token.txt"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        API.start();
+        API.start(token);
         MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
     }
 
     @Override
     public void stop() {
         API.stop();
+    }
+
+    private static String read(File file) throws IOException {
+        try (final FileInputStream input = new FileInputStream(file)) {
+            int offset = 0;
+            int remaining = (int) file.length();
+            byte[] result = new byte[remaining];
+
+            while (remaining > 0) {
+                int read = input.read(result, offset, remaining);
+                if (read >= 0) {
+                    remaining -= read;
+                    offset += read;
+                } else {
+                    break;
+                }
+            }
+
+            return new String(remaining == 0 ? result : Arrays.copyOf(result, offset), StandardCharsets.UTF_8);
+        }
     }
 }
