@@ -12,7 +12,7 @@ public class API {
         System.out.println(playerName + ": " + message);
     }
 
-    public static void start() {
+    public static void start(String token) {
         // FIXME JDA should have an api that starts a thread
     }
 

@@ -8,6 +8,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
 @SideOnly(Side.SERVER)
 public class ServerProxy extends CommonProxy {
     @Override
@@ -18,6 +22,13 @@ public class ServerProxy extends CommonProxy {
                 MinecraftServer.getServer().sendChatToPlayer("Discord => " + username + ": " + message);
             }
         });
+        final String token;
+        try (final FileReader fileReader = new FileReader("bot_token.txt")) {
+            token = fileReader.read();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        API.start();
         MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
     }
 

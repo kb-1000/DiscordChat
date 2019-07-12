@@ -1,5 +1,6 @@
 plugins {
     id "org.gradle.java"
+    id "me.tatarka.retrolambda" version "3.7.1"
 }
 
 repositories {
@@ -12,4 +13,10 @@ dependencies {
 
 jar {
     from(configurations.runtimeClasspath.filter {!it.path.endsWith(".pom")}.collect { it.isDirectory() ? it : zipTree(it) })
+}
+
+retrolambda {
+    javaVersion = JavaVersion.VERSION_1_6
+    defaultMethods = true
+    incremental = false
 }
