@@ -3,6 +3,7 @@ package com.github.kb1000.discordchat.proxy;
 import com.github.kb1000.discordchat.discord.API;
 import com.github.kb1000.discordchat.discord.MessageHandler;
 import com.github.kb1000.discordchat.handler.ServerEventHandler;
+import com.google.gson.Gson;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.server.MinecraftServer;
@@ -24,13 +25,14 @@ public class ServerProxy extends CommonProxy {
                 MinecraftServer.getServer().sendChatToPlayer("Discord => " + username + ": " + message);
             }
         });
-        final String token;
+        final String json;
         try {
-            token = read(new File("bot_token.txt"));
+            // FIXME(kb1000): use standard forge config mechanisms
+            json = read(new File("config/discordchat.json"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        API.start(token);
+        API.start(new Gson().fromJson(json, API.Config.class));
         MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
     }
 
