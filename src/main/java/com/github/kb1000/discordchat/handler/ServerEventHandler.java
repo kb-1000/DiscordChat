@@ -10,6 +10,10 @@ import net.minecraftforge.event.ServerChatEvent;
 public class ServerEventHandler {
     @ForgeSubscribe
     public void chat(ServerChatEvent e) {
-        API.message(e.player.username, e.message);
+        if (!API.message(e.player.username, e.message)) {
+            if (e.isCancelable()) {
+                e.setCanceled(true);
+            }
+        }
     }
 }
