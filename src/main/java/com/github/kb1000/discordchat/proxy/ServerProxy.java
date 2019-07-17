@@ -6,7 +6,9 @@ import com.github.kb1000.discordchat.handler.ServerEventHandler;
 import com.google.gson.Gson;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.PlayerManager;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.io.File;
@@ -14,15 +16,22 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @SideOnly(Side.SERVER)
 public class ServerProxy extends CommonProxy {
+    private static final Logger logger = Logger.getLogger("discordchat.ServerProxy");
     @Override
     public void start() {
         API.setMessageHandler(new MessageHandler() {
             @Override
             public void message(String username, String message) {
-                MinecraftServer.getServer().sendChatToPlayer("Discord => " + username + ": " + message);
+                try {
+                    MinecraftServer.getServerConfigurationManager(MinecraftServer.getServer()).sendChatMsg("Discord => " + username + ": " + message);
+                } catch (NullPointerException e) {
+                    logger.log(Level.WARNING, "Received message before server was ready: " + username + ": " + message, e);
+                }
             }
         });
         final String json;
